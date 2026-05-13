@@ -41,9 +41,11 @@ type CloudcixProvider struct {
 
 // CloudcixProviderModel describes the provider data model.
 type CloudcixProviderModel struct {
-	BaseURL      types.String `tfsdk:"base_url" json:"base_url,optional"`
-	APIKey       types.String `tfsdk:"api_key" json:"api_key,optional"`
-	SettingsFile types.String `tfsdk:"settings_file" json:"settings_file,optional"`
+	BaseURL  types.String `tfsdk:"base_url"`
+	APIKey   types.String `tfsdk:"api_key"`
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
+	RegionID types.Int64  `tfsdk:"region_id"`
 }
 
 func (p *CloudcixProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -55,14 +57,25 @@ func ProviderSchema(ctx context.Context) schema.Schema {
 	return schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"base_url": schema.StringAttribute{
-				Description: "Set the base url that the provider connects to.",
+				Description: "The CloudCIX API base URL. If omitted, the CLOUDCIX_API_URL environment variable is used.",
 				Optional:    true,
 			},
 			"api_key": schema.StringAttribute{
-				Optional: true,
+				Description: "The CloudCIX API key. If omitted, the CLOUDCIX_API_KEY environment variable is used.",
+				Optional:    true,
+				Sensitive:   true,
 			},
-			"settings_file": schema.StringAttribute{
-				Description: "Path to a settings file containing CloudCIX credentials.",
+			"username": schema.StringAttribute{
+				Description: "The CloudCIX username (email). If omitted, the CLOUDCIX_API_USERNAME environment variable is used.",
+				Optional:    true,
+			},
+			"password": schema.StringAttribute{
+				Description: "The CloudCIX password. If omitted, the CLOUDCIX_API_PASSWORD environment variable is used.",
+				Optional:    true,
+				Sensitive:   true,
+			},
+			"region_id": schema.Int64Attribute{
+				Description: "The default CloudCIX region ID. If omitted, the CLOUDCIX_REGION_ID environment variable is used.",
 				Optional:    true,
 			},
 		},
@@ -83,13 +96,8 @@ func (p *CloudcixProvider) Configure(ctx context.Context, req provider.Configure
 		return
 	}
 
-	// Load settings from file if provided, otherwise from environment
-	var settingsFile string
-	if !data.SettingsFile.IsNull() && !data.SettingsFile.IsUnknown() {
-		settingsFile = data.SettingsFile.ValueString()
-	}
-
-	settings, err := config.LoadSettings(settingsFile)
+	// Load settings from environment variables
+	settings, err := config.LoadSettings()
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Failed to load settings",
@@ -98,7 +106,7 @@ func (p *CloudcixProvider) Configure(ctx context.Context, req provider.Configure
 		return
 	}
 
-	// Allow provider config to override settings
+	// Allow provider block to override environment variables
 	if !data.BaseURL.IsNull() && !data.BaseURL.IsUnknown() {
 		settings.CLOUDCIX_API_URL = data.BaseURL.ValueString()
 	} else if o, ok := os.LookupEnv("CLOUDCIX_BASE_URL"); ok {
@@ -108,6 +116,18 @@ func (p *CloudcixProvider) Configure(ctx context.Context, req provider.Configure
 
 	if !data.APIKey.IsNull() && !data.APIKey.IsUnknown() {
 		settings.CLOUDCIX_API_KEY = data.APIKey.ValueString()
+	}
+
+	if !data.Username.IsNull() && !data.Username.IsUnknown() {
+		settings.CLOUDCIX_API_USERNAME = data.Username.ValueString()
+	}
+
+	if !data.Password.IsNull() && !data.Password.IsUnknown() {
+		settings.CLOUDCIX_API_PASSWORD = data.Password.ValueString()
+	}
+
+	if !data.RegionID.IsNull() && !data.RegionID.IsUnknown() {
+		settings.CLOUDCIX_REGION_ID = int(data.RegionID.ValueInt64())
 	}
 
 	opts := []option.RequestOption{}

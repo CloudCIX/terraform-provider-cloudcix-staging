@@ -1,3 +1,7 @@
 provider "cloudcix" {
-  settings_file = "/path/to/my_settings.env"
+  base_url  = "https://api.cloudcix.com/"
+  username  = "user@example.com"
+  password  = "your-password"
+  api_key   = "your-api-key"
+  region_id = 1
 }
