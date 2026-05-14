@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.1 (2026-05-14)
+
+Full Changelog: [v0.15.0...v0.15.1](https://github.com/CloudCIX/terraform-provider-cloudcix/compare/v0.15.0...v0.15.1)
+
+### Chores
+
+* **internal:** codegen related update ([e4d2ea6](https://github.com/CloudCIX/terraform-provider-cloudcix/commit/e4d2ea654fe06724686f4760b3e8813ca6ade837))
+
 ## 0.15.0 (2026-05-13)
 
 Full Changelog: [v0.14.1...v0.15.0](https://github.com/CloudCIX/terraform-provider-cloudcix/compare/v0.14.1...v0.15.0)
