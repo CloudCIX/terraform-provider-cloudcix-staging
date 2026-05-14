@@ -191,6 +191,27 @@ func (r *ProjectResource) Delete(ctx context.Context, req resource.DeleteRequest
 		option.WithMiddleware(logging.Middleware(ctx)),
 	)
 	if err != nil {
+		// DELETE can fail with 500 if the project was already closed by a router cascade delete.
+		// In that case, verify the project is closed before treating it as successfully deleted.
+		res := new(http.Response)
+		_, getErr := r.client.Project.Get(
+			ctx,
+			data.ID.ValueInt64(),
+			option.WithResponseBodyInto(&res),
+			option.WithMiddleware(logging.Middleware(ctx)),
+		)
+		if res != nil && res.StatusCode == 404 {
+			// Project is gone
+			return
+		}
+		if getErr == nil {
+			bytes, _ := io.ReadAll(res.Body)
+			var env ProjectContentEnvelope
+			if apijson.Unmarshal(bytes, &env) == nil && env.Content.Closed.ValueBool() {
+				// Project is closed (cascade deleted by router) - treat as successfully deleted
+				return
+			}
+		}
 		resp.Diagnostics.AddError("failed to make http request", err.Error())
 		return
 	}
