@@ -39,7 +39,8 @@ func ResourceSchema(ctx context.Context) schema.Schema {
 			},
 			"private_key": schema.StringAttribute{
 				Description: "The PEM-encoded Ed25519 private key. Only present in the create (POST) response\nwhen no public_key was supplied and the key pair was auto-generated. Not stored\nby the API — save it immediately.",
-				Computed:    true,
+				Computed:  true,
+				Sensitive: true,
 			},
 		},
 	}
