@@ -43,6 +43,7 @@ resource "cloudcix_compute_instance" "example_compute_instance" {
   metadata = {
     dns = "dns"
     instance_type = "instance_type"
+    ssh_key_names = ["string"]
     userdata = "userdata"
   }
   project_id = 1
@@ -117,6 +118,10 @@ Optional:
 that the Compute Instance will use.
 - `instance_type` (String) Optional, The Compute Instance instance type of the VM. Valid options
 are "container" or "virtual-machine". If not sent it will default to "container".
+- `ssh_key_names` (List of String) Optional. A list of SSH key names (previously registered via POST /compute/ssh_keys/) to inject
+into the instance during provisioning. The public keys are appended to `ssh_authorized_keys` for
+the first sudo user defined in the cloud-init userdata. If no sudo user exists, an `administrator`
+user is created automatically. Only supported for LXD instances with #cloud-config userdata.
 - `userdata` (String) Cloud Init allows Mime Multi-part messages, or files that start with a given set of strings. It is
 a requirement to configure at minimum one user with a password or ssh key that is in the sudo group.
 
@@ -174,7 +179,7 @@ If not sent, it will default to False.
 
 Read-Only:
 
-- `public_ip` (String) The Public IP address that the address is NATted to.
+- `public_ip` (String) The Public IP address that the address is NATted to. Populated by the API after provisioning.
 
 
 <a id="nestedatt--interfaces--ipv6_addresses"></a>
