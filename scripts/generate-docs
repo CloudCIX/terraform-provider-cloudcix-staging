@@ -5,7 +5,7 @@ set -e
 cd -- "$(dirname -- "$0")/.."
 
 # Mark the necessary Go modules as private to avoid Go's proxy
-export GOPRIVATE="${GOPRIVATE:+$GOPRIVATE,}github.com/CloudCIX/gocloudcix,github.com/stainless-sdks/gocloudcix-go"
+export GOPRIVATE="${GOPRIVATE:+$GOPRIVATE,}github.com/CloudCIX/gocloudcix,github.com/CloudCIX/gocloudcix-staging"
 
 echo "==> Generating Terraform provider documentation"
 
