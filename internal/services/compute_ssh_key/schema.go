@@ -21,7 +21,7 @@ func ResourceSchema(ctx context.Context) schema.Schema {
 			"id": schema.Int64Attribute{
 				Description:   "The ID of the SSH Key record.",
 				Computed:      true,
-				PlanModifiers: []planmodifier.Int64{int64planmodifier.UseStateForUnknown(), int64planmodifier.RequiresReplace()},
+				PlanModifiers: []planmodifier.Int64{int64planmodifier.UseNonNullStateForUnknown(), int64planmodifier.RequiresReplace()},
 			},
 			"name": schema.StringAttribute{
 				Description:   "A unique, user-friendly name for the SSH Key. Maximum 50 characters.",
@@ -40,7 +40,6 @@ func ResourceSchema(ctx context.Context) schema.Schema {
 			"private_key": schema.StringAttribute{
 				Description: "The PEM-encoded Ed25519 private key. Only present in the create (POST) response\nwhen no public_key was supplied and the key pair was auto-generated. Not stored\nby the API — save it immediately.",
 				Computed:    true,
-				Sensitive:   true,
 			},
 		},
 	}
