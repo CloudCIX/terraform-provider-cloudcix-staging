@@ -97,7 +97,7 @@ Read-Only:
 
 Read-Only:
 
-- `address` (String) The IP address of the IPAddress record.
+- `address` (String) The IPv4 address of the IPAddress record.
 - `created` (String) Timestamp, in ISO format, of when the IPAddress record was created.
 - `id` (Number) The ID of the IPAddress record.
 - `name` (String) A verbose name given to the IPAddress record.
@@ -122,7 +122,7 @@ Read-Only:
 
 Read-Only:
 
-- `address` (String) The IP address of the IPAddress record.
+- `address` (String) The IPv4 address of the IPAddress record.
 - `created` (String) Timestamp, in ISO format, of when the IPAddress record was created.
 - `id` (Number) The ID of the IPAddress record.
 - `name` (String) A verbose name given to the IPAddress record.
