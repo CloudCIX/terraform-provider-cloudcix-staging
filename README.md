@@ -22,14 +22,14 @@ terraform {
   required_providers {
     cloudcix = {
       source  = "CloudCIX/cloudcix"
-      version = "~> 0.22.2"
+      version = "~> 0.22.4"
     }
   }
 }
 
 # Initialize the provider
 provider "cloudcix" {
-  settings_file = "/path/to/my_settings.env"
+  api_key = "My API Key" # or set GOCLOUDCIX_API_KEY env variable
 }
 
 # Configure a resource
